@@ -9,6 +9,7 @@ OUT.mkdir(exist_ok=True)
 PAGES = [
     ("index.html", "Suositus.html", "Suositus"),
     ("hallituksen-linja.html", "Hallituksen linja.html", "Hallituksen linja"),
+    ("liberaali-vaihtoehto.html", "Liberaali vaihtoehto.html", "Liberaali vaihtoehto"),
     ("alue-erittely.html", "Alue-erittely.html", "Alue-erittely"),
     ("sanasto.html", "Sanasto.html", "Sanasto"),
 ]
@@ -140,6 +141,10 @@ def process(body, fname):
     body = body.replace("Hallituksen linja -välilehden", '<a href="hallituksen-linja.html">Hallituksen linja</a> -välilehden')
     body = re.sub(r'<span data-atom="mention"[^>]*>[^<]*</span>', "Harri Juntunen", body)
     body = re.sub(r'<p><time[^>]*>(\d{4})-(\d{2})-(\d{2})</time> · Harri Juntunen</p>', lambda m: f'<p class="byline">{int(m.group(3))}.{int(m.group(2))}.{m.group(1)} · Harri Juntunen</p>', body)
+    body = re.sub(r'<a data-atom="ref" data-ref="file/76c5cc30-4152">', '<a href="liberaali-vaihtoehto.html">', body)
+    body = body.replace("välilehdellä Suositus", '<a href="index.html">välilehdellä Suositus</a>')
+    body = body.replace("välilehdellä Hallituksen linja", '<a href="hallituksen-linja.html">välilehdellä Hallituksen linja</a>')
+    body = body.replace("(ks. Hallituksen linja, luvut 3–5)", '(ks. <a href="hallituksen-linja.html#3-vaikutukset-palveluihin">Hallituksen linja, luvut 3–5</a>)')
     # ulkoiset linkit uuteen välilehteen
     body = re.sub(r'<a href="(https?://[^"]+)"', r'<a href="\1" target="_blank" rel="noopener"', body)
     return body
