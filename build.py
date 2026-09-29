@@ -19,7 +19,12 @@ ROOT = pathlib.Path(__file__).parent
 
 # Interaktiiviset sivut (alkuperäiset Claude-artefaktit), upotetaan iframeen
 APP_OVERRIDE = """<style id="site-override">
-:root{--serif:Raleway,system-ui,sans-serif;--sans:Raleway,system-ui,sans-serif;--bg:#fbfaf7}
+:root{--serif:Raleway,system-ui,sans-serif;--sans:Raleway,system-ui,sans-serif;--bg:#ffffff;--surface:#ffffff;--accent:#ffa600;--accentSoft:#fff1d6;--cP:#ffa600}
+.big .n{color:#b86e00!important}
+a{color:inherit!important;text-decoration:underline;text-decoration-color:#ffa600;text-decoration-thickness:2px;text-underline-offset:3px}
+th{border-bottom:2px solid #ffa600!important}
+.hm th{border-bottom:0!important}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .big .n{color:#ffbf47!important}}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#141413}}
 :root[data-theme="dark"]{--bg:#141413}
 *,*::before,*::after{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
