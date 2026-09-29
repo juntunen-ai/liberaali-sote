@@ -7,7 +7,7 @@ OUT = pathlib.Path(__file__).parent / "docs"
 OUT.mkdir(exist_ok=True)
 
 PAGES = [
-    ("index.html", "Suositus.html", "Politiikkasuositus"),
+    ("index.html", "Politiikkasuositus.html", "Politiikkasuositus"),
     ("hallituksen-linja.html", "Hallituksen linja.html", "Hallituksen linja"),
     ("liberaali-vaihtoehto.html", "Liberaali vaihtoehto.html", "Liberaali vaihtoehto"),
     ("alue-erittely.html", "Alue-erittely.html", "Alue-erittely"),
