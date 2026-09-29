@@ -1,4 +1,4 @@
-# Miljardi hukasta, ei hoidosta
+# Parempi hoiva vähentämällä hukkaa
 
 Liberaalipuolueen sote-politiikkasuositus: sote-menojen hillintä palveluja heikentämättä, analyysi hallituksen sote-linjasta 2023–2027 sekä alue-erittely ja sanasto.
 

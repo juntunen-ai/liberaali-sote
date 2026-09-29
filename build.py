@@ -13,7 +13,7 @@ PAGES = [
     ("alue-erittely.html", "Alue-erittely.html", "Alue-erittely"),
     ("sanasto.html", "Sanasto.html", "Sanasto"),
 ]
-SITE_TITLE = "Miljardi hukasta, ei hoidosta"
+SITE_TITLE = "Parempi hoiva vähentämällä hukkaa"
 
 # ---------- kaaviot (inline SVG) ----------
 def fmt(v, d=1):
@@ -260,7 +260,7 @@ for out, src, label in PAGES:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{html.escape(ptitle)} · {SITE_TITLE}</title>
+<title>{html.escape(ptitle) + " · " + SITE_TITLE if ptitle != SITE_TITLE else SITE_TITLE}</title>
 <meta name="description" content="Liberaalipuolueen sote-politiikkasuositus: sote-menojen hillintä palveluja heikentämättä.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
