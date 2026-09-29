@@ -264,7 +264,7 @@ for out, src, label in PAGES:
 <meta name="description" content="Liberaalipuolueen sote-politiikkasuositus: sote-menojen hillintä palveluja heikentämättä.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>{CSS}</style>
 </head>
 <body>
@@ -279,7 +279,8 @@ for out, src, label in PAGES:
 <article>{body}</article>
 </main>
 <footer class="site"><div class="wrap">
-<p>Luonnos Liberaalipuolueen poliittiseen ohjelmaan · päivitetty 29.9.2026 · Laskelmat: <a href="https://github.com/juntunen-ai/budjettihaukka" target="_blank" rel="noopener">Budjettihaukka</a>. Luvut ovat arvioita; lähteet on lueteltu kunkin sivun lopussa.</p>
+<p class="credit"><a href="https://github.com/juntunen-ai/budjettihaukka" target="_blank" rel="noopener">BUDJETTIHAUKKA</a> | HARRI JUNTUNEN | LIBERAALIPUOLUE</p>
+<p>Luvut ovat arvioita; lähteet on lueteltu kunkin sivun lopussa.</p>
 </div></footer>
 <div id="tip" role="tooltip" hidden></div>
 <script>{JS}</script>
