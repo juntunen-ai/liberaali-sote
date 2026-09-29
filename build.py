@@ -211,7 +211,13 @@ def process(body, fname):
     body = re.sub(r'<figure data-embed="([^"]+)">.*?</figure>',
                   lambda m: CHARTS[m.group(1)]() if m.group(1) in CHARTS else "", body, flags=re.S)
     # taulukot vieritettäviksi
-    body = body.replace("<table>", '<div class="tablewrap"><table>').replace("</table>", "</table></div>")
+    def _wrap(m):
+        t = m.group(0)
+        head = re.search(r"<thead>.*?</thead>", t, re.S)
+        ncol = head.group(0).count("<th") if head else 0
+        cls = "tablewrap wide" if ncol >= 5 else "tablewrap"
+        return f'<div class="{cls}">{t}</div>'
+    body = re.sub(r"<table>.*?</table>", _wrap, body, flags=re.S)
     # figure-taulukot eivät tarvitse kääremuutosta, siivotaan tuplakääre detailsin sisältä
     body = re.sub(r'(<details><summary>[^<]*</summary>)<div class="tablewrap">(<table>.*?</table>)</div>',
                   r"\1\2", body, flags=re.S)
