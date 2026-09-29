@@ -114,10 +114,93 @@ def figure(title, note, svg, legend, table):
             f'<figcaption>{note}</figcaption><details><summary>Näytä luvut taulukkona</summary>'
             f'<table>{table}</table></details></figure>')
 
+
+import json as _json
+ALUE = _json.loads((SRC / "alue_charts.json").read_text())
+
+def alue_bar_chart():
+    data = sorted(ALUE["bars"], key=lambda r: -r["meur"])
+    W, L, R, T, rowh = 720, 140, 40, 8, 26
+    H = T + rowh * len(data) + 34
+    xmax = 100
+    X = lambda v: L + v / xmax * (W - L - R)
+    g = []
+    for t in [0, 20, 40, 60, 80, 100]:
+        g.append(f'<line class="grid" x1="{X(t):.1f}" x2="{X(t):.1f}" y1="{T}" y2="{H-30}"/><text class="tick" x="{X(t):.1f}" y="{H-12}" text-anchor="middle">{t}</text>')
+    for i, r in enumerate(data):
+        y = T + rowh * i + 4; h = rowh - 8; w = X(r["meur"]) - L
+        cls = "s1f" if i < 4 else "mutedf"
+        g.append(f'<text class="tick" x="{L-8}" y="{y+h/2+4:.1f}" text-anchor="end">{r["alue"]}</text>'
+                 f'<path class="{cls} hit" d="M{L},{y} H{L+max(w-4,0):.1f} Q{L+w:.1f},{y} {L+w:.1f},{y+4} V{y+h-4} Q{L+w:.1f},{y+h} {L+max(w-4,0):.1f},{y+h} H{L} Z" data-tip="{r["alue"]}: {r["meur"]} M€ vuodessa"/>'
+                 f'<text class="dlabel" x="{L+w+6:.1f}" y="{y+h/2+4:.1f}">{r["meur"]}</text>')
+    tot = sum(r["meur"] for r in data)
+    table = "".join(f'<tr><td>{r["alue"]}</td><td>{r["meur"]}</td></tr>' for r in data)
+    return figure(f"Ylitys noin {round(tot,-1):.0f} M€ kertyy {len(data)} alueelta",
+                  "Tarvevakioitu ylitys keskitason yläpuolella, M€ vuodessa (vuoden 2025 kustannustaso, indeksi 2023–2025 keskiarvo). Neljä kalleinta aluetta (korostettu) kattaa 250 M€. Lähde: Budjettihaukan BigQuery (Valtiokonttorin HHTPP-raportointi) ja VM:n rahoituslaskelmat.",
+                  f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Tarvevakioitu ylitys alueittain">{"".join(g)}</svg>',
+                  legend=None, table=f"<thead><tr><th>Alue</th><th>Ylitys, M€/v</th></tr></thead><tbody>{table}</tbody>")
+
+def alue_dumbbell_chart():
+    rows = ALUE["dumb"]
+    areas = []
+    for r in rows:
+        if r["alue"] not in areas: areas.append(r["alue"])
+    v = {(r["alue"], r["vuosi"]): r["idx"] for r in rows}
+    W, L, R, T, rowh = 720, 140, 30, 10, 22
+    H = T + rowh * len(areas) + 34
+    xmin, xmax = 0.88, 1.12
+    X = lambda x: L + (x - xmin) / (xmax - xmin) * (W - L - R)
+    g = []
+    for t in [0.90, 0.95, 1.00, 1.05, 1.10]:
+        g.append(f'<line class="{"ref" if t==1 else "grid"}" x1="{X(t):.1f}" x2="{X(t):.1f}" y1="{T}" y2="{H-30}"/><text class="tick" x="{X(t):.1f}" y="{H-12}" text-anchor="middle">{fmt(t,2)}</text>')
+    g.append(f'<text class="tick" x="{X(1)+4:.1f}" y="{T+8}">Keskitaso</text>')
+    for i, a in enumerate(areas):
+        y = T + rowh * i + rowh / 2
+        a0, a1 = v[(a, "2023")], v[(a, "2025")]
+        g.append(f'<text class="tick" x="{L-8}" y="{y+4:.1f}" text-anchor="end">{a}</text>'
+                 f'<line class="whisk" x1="{X(a0):.1f}" x2="{X(a1):.1f}" y1="{y:.1f}" y2="{y:.1f}"/>'
+                 f'<circle class="yr0f hit" cx="{X(a0):.1f}" cy="{y:.1f}" r="5" data-tip="{a} 2023: {fmt(a0,3)}"/>'
+                 f'<circle class="s1f hit" cx="{X(a1):.1f}" cy="{y:.1f}" r="5" data-tip="{a} 2025: {fmt(a1,3)}"/>')
+    table = "".join(f'<tr><td>{a}</td><td>{fmt(v[(a,"2023")],3)}</td><td>{fmt(v[(a,"2025")],3)}</td></tr>' for a in areas)
+    return figure("Kolme neljästä kalleimmasta kallistui",
+                  "Tarvevakioitu kustannusindeksi 2023 ja 2025, 1,00 = Manner-Suomen taso. Keski-Suomi, Kymenlaakso ja Etelä-Savo erkanivat keskitasosta, Keski-Uusimaa lähestyi sitä.",
+                  f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Indeksin muutos 2023–2025">{"".join(g)}</svg>',
+                  legend=[("yr0", "2023"), ("s1", "2025")],
+                  table=f"<thead><tr><th>Alue</th><th>2023</th><th>2025</th></tr></thead><tbody>{table}</tbody>")
+
+def alue_heat_chart():
+    rows = ALUE["heat"]
+    secs = [r["sektori"] for r in rows if r["alue"] == rows[0]["alue"]]
+    areas = [r["alue"] for r in rows if r["sektori"] == secs[0]]
+    W, L, T, rowh = 720, 150, 28, 24
+    cw = (W - L - 10) / len(secs)
+    H = T + rowh * len(areas) + 8
+    g = []
+    for j, s_ in enumerate(secs):
+        g.append(f'<text class="tick" x="{L + j*cw + cw/2:.1f}" y="{T-10}" text-anchor="middle">{s_}</text>')
+    for i, a in enumerate(areas):
+        g.append(f'<text class="tick" x="{L-8}" y="{T + i*rowh + 16}" text-anchor="end">{a}</text>')
+    for r in rows:
+        i, j = areas.index(r["alue"]), secs.index(r["sektori"])
+        op = min(0.7, 0.06 + abs(r["idx"] - 1) * 2)
+        cls = "hotf" if r["idx"] >= 1 else "s1f"
+        x = L + j*cw + 2; y = T + i*rowh + 1
+        g.append(f'<rect class="{cls} hit" x="{x:.1f}" y="{y}" width="{cw-4:.1f}" height="{rowh-2}" rx="3" fill-opacity="{op:.2f}" data-tip="{r["alue"]}, {r["sektori"]}: {fmt(r["idx"],2)}"/>'
+                 f'<text class="cell" x="{x + (cw-4)/2:.1f}" y="{y+15}" text-anchor="middle">{fmt(r["idx"],2)}</text>')
+    table = "".join("<tr><td>" + a + "</td>" + "".join(f'<td>{fmt(next(r["idx"] for r in rows if r["alue"]==a and r["sektori"]==s_),2)}</td>' for s_ in secs) + "</tr>" for a in areas)
+    return figure("Kallein sektori vaihtelee alueittain",
+                  "Tarvevakioitu indeksi sektoreittain, 2023–2025 keskiarvo, 1,00 = keskitaso. Mitä voimakkaampi väri, sitä suurempi ero keskitasoon.",
+                  f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Sektorikohtainen indeksi alueittain">{"".join(g)}</svg>',
+                  legend=[("hot", "Keskitasoa kalliimpi"), ("s1", "Keskitasoa halvempi")],
+                  table=f"<thead><tr><th>Alue</th>{''.join(f'<th>{s_}</th>' for s_ in secs)}</tr></thead><tbody>{table}</tbody>")
+
 CHARTS = {
     "node/a6e7b5bb-705c": line_chart,
     "node/1deadadd-90eb": index_chart,
     "node/f3379a10-f736": bar_chart,
+    "node/03355f26-3d3b": alue_bar_chart,
+    "node/a5755818-dc3f": alue_dumbbell_chart,
+    "node/a10326e4-e09d": alue_heat_chart,
 }
 
 # ---------- sisältö ----------

@@ -92,3 +92,10 @@ footer.site{border-top:1px solid var(--line);font:13px/1.5 Inter,system-ui,sans-
   main.wrap{display:block}
   body{background:#fff;color:#000}
 }
+
+.mutedf{fill:var(--muted)} .yr0f{fill:var(--yr0);background:var(--yr0)} .hotf{fill:var(--hot);background:var(--hot)}
+.mutedf{background:var(--muted)}
+.cell{fill:var(--ink);font-size:12px}
+:root{--muted:#b9b6ae;--yr0:#a9c6ec;--hot:#d9453b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--muted:#5c5a55;--yr0:#3d5f8a;--hot:#e66767}}
+:root[data-theme="dark"]{--muted:#5c5a55;--yr0:#3d5f8a;--hot:#e66767}
