@@ -7,7 +7,7 @@ OUT = pathlib.Path(__file__).parent / "docs"
 OUT.mkdir(exist_ok=True)
 
 PAGES = [
-    ("index.html", "Suositus.html", "Suositus"),
+    ("index.html", "Suositus.html", "Politiikkasuositus"),
     ("hallituksen-linja.html", "Hallituksen linja.html", "Hallituksen linja"),
     ("liberaali-vaihtoehto.html", "Liberaali vaihtoehto.html", "Liberaali vaihtoehto"),
     ("alue-erittely.html", "Alue-erittely.html", "Alue-erittely"),
@@ -135,14 +135,14 @@ def process(body, fname):
     # liikennevalot: merkitään solut
     body = body.replace("<td>🔴", '<td class="tl tl-red">🔴').replace("<td>🟢", '<td class="tl tl-green">🟢').replace("<td>🟡", '<td class="tl tl-yellow">🟡')
     # ristiviittaukset välilehtiin
-    body = body.replace("välilehti Suositus", '<a href="index.html">välilehti Suositus</a>')
+    body = body.replace("välilehti Suositus", '<a href="index.html">välilehti Politiikkasuositus</a>')
     body = re.sub(r"(Alueittainen erittely siitä, mistä ylitys syntyy: )Alue-erittely",
                   r'\1<a href="alue-erittely.html">Alue-erittely</a>', body)
     body = body.replace("Hallituksen linja -välilehden", '<a href="hallituksen-linja.html">Hallituksen linja</a> -välilehden')
     body = re.sub(r'<span data-atom="mention"[^>]*>[^<]*</span>', "Harri Juntunen", body)
     body = re.sub(r'<p><time[^>]*>(\d{4})-(\d{2})-(\d{2})</time> · Harri Juntunen</p>', lambda m: f'<p class="byline">{int(m.group(3))}.{int(m.group(2))}.{m.group(1)} · Harri Juntunen</p>', body)
     body = re.sub(r'<a data-atom="ref" data-ref="file/76c5cc30-4152">', '<a href="liberaali-vaihtoehto.html">', body)
-    body = body.replace("välilehdellä Suositus", '<a href="index.html">välilehdellä Suositus</a>')
+    body = body.replace("välilehdellä Politiikkasuositus", '<a href="index.html">välilehdellä Politiikkasuositus</a>')
     body = body.replace("välilehdellä Hallituksen linja", '<a href="hallituksen-linja.html">välilehdellä Hallituksen linja</a>')
     body = body.replace("(ks. Hallituksen linja, luvut 3–5)", '(ks. <a href="hallituksen-linja.html#3-vaikutukset-palveluihin">Hallituksen linja, luvut 3–5</a>)')
     # ulkoiset linkit uuteen välilehteen
