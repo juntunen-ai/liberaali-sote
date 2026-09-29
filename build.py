@@ -85,26 +85,26 @@ def index_chart():
                   table=f"<thead><tr><th>Alue</th><th>Indeksi</th><th>Vaihteluväli</th></tr></thead><tbody>{table}</tbody>")
 
 def bar_chart():
-    data = [("2024",105),("2025",394),("2026",468),("2027",715)]
-    W, H, L, R, T, B = 720, 300, 56, 20, 24, 36
-    ymax = 800
+    data = [("2024",-105),("2025",-394),("2026",-468),("2027",-715)]
+    W, H, L, R, T, B = 720, 320, 64, 20, 28, 30
+    ymin = -800
     bw = (W - L - R) / len(data)
-    Y = lambda v: T + (ymax - v) / ymax * (H - T - B)
+    Y = lambda v: T + (0 - v) / (0 - ymin) * (H - T - B)
     g = []
-    for t in [0, 200, 400, 600, 800]:
-        g.append(f'<line class="grid" x1="{L}" x2="{W-R}" y1="{Y(t):.1f}" y2="{Y(t):.1f}"/>'
-                 f'<text class="tick" x="{L-8}" y="{Y(t)+4:.1f}" text-anchor="end">{t}</text>')
+    for t in [0, -200, -400, -600, -800]:
+        g.append(f'<line class="{"axis0" if t==0 else "grid"}" x1="{L}" x2="{W-R}" y1="{Y(t):.1f}" y2="{Y(t):.1f}"/>'
+                 f'<text class="tick" x="{L-8}" y="{Y(t)+4:.1f}" text-anchor="end">{str(t).replace("-","−")}</text>')
     for i, (yr, v) in enumerate(data):
-        x = L + i * bw + bw * 0.25; w = bw * 0.5; y = Y(v); h = Y(0) - y
-        g.append(f'<path class="s1f hit" d="M{x:.1f},{Y(0):.1f} V{y+4:.1f} Q{x:.1f},{y:.1f} {x+4:.1f},{y:.1f} H{x+w-4:.1f} Q{x+w:.1f},{y:.1f} {x+w:.1f},{y+4:.1f} V{Y(0):.1f} Z" data-tip="{yr}: {v} M€"/>'
-                 f'<text class="dlabel" x="{x+w/2:.1f}" y="{y-6:.1f}" text-anchor="middle">{v}</text>'
-                 f'<text class="tick" x="{x+w/2:.1f}" y="{H-B+18}" text-anchor="middle">{yr}</text>')
-    table = "".join(f"<tr><td>{y}</td><td>{v}</td></tr>" for y, v in data)
+        x = L + i * bw + bw * 0.25; w = bw * 0.5; y0 = Y(0); y1 = Y(v)
+        g.append(f'<text class="tick" x="{x+w/2:.1f}" y="{T-10}" text-anchor="middle">{yr}</text>'
+                 f'<path class="hotf hit" d="M{x:.1f},{y0:.1f} V{y1-4:.1f} Q{x:.1f},{y1:.1f} {x+4:.1f},{y1:.1f} H{x+w-4:.1f} Q{x+w:.1f},{y1:.1f} {x+w:.1f},{y1-4:.1f} V{y0:.1f} Z" data-tip="{yr}: −{-v} M€ vuodessa"/>'
+                 f'<text class="dlabel" x="{x+w/2:.1f}" y="{y1+16:.1f}" text-anchor="middle">−{-v}</text>')
+    table = "".join(f"<tr><td>{y}</td><td>−{-v}</td></tr>" for y, v in data)
     return figure("Rahoitusta 0,7 mrd € vähemmän 2027",
                   "Hallituksen päätösperäiset vähennykset alueiden rahoitukseen kumulatiivisesti, M€ vuodessa. 2027 sisältää rahoituslain 60 %:n säännön. Ei sisällä STEA-leikkauksia eikä Kelan korvauksia. Oma laskelma talousarvioesityksistä 2024–2027.",
                   f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Rahoitusvähennykset 2024–2027">{"".join(g)}</svg>',
                   legend=None,
-                  table=f"<thead><tr><th>Vuosi</th><th>Vähennys, M€</th></tr></thead><tbody>{table}</tbody>")
+                  table=f"<thead><tr><th>Vuosi</th><th>Muutos, M€</th></tr></thead><tbody>{table}</tbody>")
 
 def figure(title, note, svg, legend, table):
     leg = ""

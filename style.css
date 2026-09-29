@@ -99,3 +99,5 @@ footer.site{border-top:1px solid var(--line);font:13px/1.5 Inter,system-ui,sans-
 :root{--muted:#b9b6ae;--yr0:#a9c6ec;--hot:#d9453b}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--muted:#5c5a55;--yr0:#3d5f8a;--hot:#e66767}}
 :root[data-theme="dark"]{--muted:#5c5a55;--yr0:#3d5f8a;--hot:#e66767}
+
+.axis0{stroke:var(--ink-3);stroke-width:1.5}
