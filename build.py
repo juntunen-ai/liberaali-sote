@@ -11,8 +11,38 @@ PAGES = [
     ("hallituksen-linja.html", "Hallituksen linja.html", "Hallituksen linja"),
     ("liberaali-vaihtoehto.html", "Liberaali vaihtoehto.html", "Liberaali vaihtoehto"),
     ("alue-erittely.html", "Alue-erittely.html", "Alue-erittely"),
+    ("sote-tehtavat.html", "app:sote-tehtavat.html", "Sote-tehtävät laissa"),
+    ("laki-ja-palvelukokonaisuudet.html", "app:laki-ja-palvelukokonaisuudet.html", "Laki ja palvelukokonaisuudet"),
     ("sanasto.html", "Sanasto.html", "Sanasto"),
 ]
+ROOT = pathlib.Path(__file__).parent
+
+# Interaktiiviset sivut (alkuperäiset Claude-artefaktit), upotetaan iframeen
+APP_OVERRIDE = """<style id="site-override">
+:root{--serif:Raleway,system-ui,sans-serif;--sans:Raleway,system-ui,sans-serif;--bg:#fbfaf7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#141413}}
+:root[data-theme="dark"]{--bg:#141413}
+*,*::before,*::after{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
+html,body{background:var(--bg)!important}
+body{padding-inline:0!important;padding-block:4px 24px!important;overflow:hidden}
+.filters{position:static!important}
+</style>
+<script>
+(function(){
+  function send(){try{parent.postMessage({appHeight:document.documentElement.scrollHeight},"*")}catch(e){}}
+  if(window.ResizeObserver)new ResizeObserver(send).observe(document.body);
+  addEventListener("load",send);document.addEventListener("toggle",send,true);setInterval(send,1000);
+})();
+</script>"""
+
+def build_app(name):
+    s = (ROOT / "apps_src" / name).read_text()
+    s = re.sub(r'<link rel="stylesheet" href="https://fonts\.googleapis\.com/css2\?[^"]*">',
+               '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">', s)
+    s = s.replace('href="https://claude.ai/artifact/3hMHCQ342XTMvqZuJodMiq"', 'href="../sote-tehtavat.html" target="_top"')
+    s = s.replace("</body>", APP_OVERRIDE + "\n</body>", 1)
+    (OUT / "apps").mkdir(exist_ok=True)
+    (OUT / "apps" / name).write_text(s)
 SITE_TITLE = "Parempi hoiva vähentämällä hukkaa"
 
 # ---------- kaaviot (inline SVG) ----------
@@ -249,8 +279,12 @@ CSS = (pathlib.Path(__file__).parent / "style.css").read_text()
 JS = (pathlib.Path(__file__).parent / "tip.js").read_text()
 
 for out, src, label in PAGES:
-    body = (SRC / src).read_text()
-    body = process(body, src)
+    if src.startswith("app:"):
+        build_app(src[4:])
+        body = f'<iframe class="app" src="apps/{src[4:]}" title="{html.escape(label)}"></iframe>'
+    else:
+        body = (SRC / src).read_text()
+        body = process(body, src)
     h1 = re.search(r"<h1[^>]*>(.*?)</h1>", body)
     ptitle = re.sub("<[^>]+>", "", h1.group(1)) if h1 else label
     cur = ' aria-current="page"'

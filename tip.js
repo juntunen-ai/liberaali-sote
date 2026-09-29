@@ -12,3 +12,9 @@
     tip.style.left=x+'px';tip.style.top=Math.max(8,y)+'px';
   });
 })();
+addEventListener('message',function(e){
+  if(!e.data||typeof e.data.appHeight!=='number')return;
+  document.querySelectorAll('iframe.app').forEach(function(f){
+    if(f.contentWindow===e.source){var h=Math.ceil(e.data.appHeight)+4;if(Math.abs(f.offsetHeight-h)>2)f.style.height=h+'px';}
+  });
+});

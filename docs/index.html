@@ -128,13 +128,18 @@ footer.site .credit{font-weight:600;letter-spacing:.08em;color:var(--ink-2)}
 footer.site .credit a{color:inherit;text-decoration:none}
 footer.site .credit a:hover{text-decoration:underline}
 *,*::before,*::after{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
+
+/* upotetut interaktiiviset sivut */
+article:has(iframe.app){max-width:none}
+main.wrap:has(iframe.app){padding-top:12px}
+iframe.app{display:block;width:100%;height:1600px;border:0;background:transparent}
 </style>
 </head>
 <body>
 <header class="site">
   <div class="wrap">
     <a class="brand" href="index.html">Parempi hoiva vähentämällä hukkaa<span>Liberaalipuolueen sote-linja</span></a>
-    <nav class="tabs" aria-label="Osiot"><a href="index.html" aria-current="page">Politiikkasuositus</a><a href="hallituksen-linja.html">Hallituksen linja</a><a href="liberaali-vaihtoehto.html">Liberaali vaihtoehto</a><a href="alue-erittely.html">Alue-erittely</a><a href="sanasto.html">Sanasto</a></nav>
+    <nav class="tabs" aria-label="Osiot"><a href="index.html" aria-current="page">Politiikkasuositus</a><a href="hallituksen-linja.html">Hallituksen linja</a><a href="liberaali-vaihtoehto.html">Liberaali vaihtoehto</a><a href="alue-erittely.html">Alue-erittely</a><a href="sote-tehtavat.html">Sote-tehtävät laissa</a><a href="laki-ja-palvelukokonaisuudet.html">Laki ja palvelukokonaisuudet</a><a href="sanasto.html">Sanasto</a></nav>
   </div>
 </header>
 <main class="wrap">
@@ -247,6 +252,12 @@ footer.site .credit a:hover{text-decoration:underline}
     tip.style.left=x+'px';tip.style.top=Math.max(8,y)+'px';
   });
 })();
+addEventListener('message',function(e){
+  if(!e.data||typeof e.data.appHeight!=='number')return;
+  document.querySelectorAll('iframe.app').forEach(function(f){
+    if(f.contentWindow===e.source){var h=Math.ceil(e.data.appHeight)+4;if(Math.abs(f.offsetHeight-h)>2)f.style.height=h+'px';}
+  });
+});
 </script>
 </body>
 </html>
