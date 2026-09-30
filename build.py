@@ -268,6 +268,7 @@ def process(body, fname):
     body = re.sub(r'<a data-atom="ref" data-ref="file/76c5cc30-4152">[^<]*</a>', '<a href="liberaali-vaihtoehto.html">Liberaalien vaihtoehto</a>', body)
     body = body.replace("välilehdellä Politiikkasuositus", '<a href="index.html">välilehdellä Politiikkasuositus</a>')
     body = body.replace("välilehdellä Hallituksen linja", '<a href="hallituksen-linja.html">välilehdellä Hallituksen linja</a>')
+    body = body.replace("välilehdillä Sote-tehtävät laissa ja Laki ja palvelukokonaisuudet", 'välilehdillä <a href="sote-tehtavat.html">Sote-tehtävät laissa</a> ja <a href="laki-ja-palvelukokonaisuudet.html">Laki ja palvelukokonaisuudet</a>')
     body = body.replace("(ks. Hallituksen linja, luvut 3–5)", '(ks. <a href="hallituksen-linja.html#3-vaikutukset-palveluihin">Hallituksen linja, luvut 3–5</a>)')
     # ulkoiset linkit uuteen välilehteen
     body = re.sub(r'<a href="(https?://[^"]+)"', r'<a href="\1" target="_blank" rel="noopener"', body)
