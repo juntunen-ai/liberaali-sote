@@ -9,7 +9,7 @@ OUT.mkdir(exist_ok=True)
 PAGES = [
     ("index.html", "Politiikkasuositus.html", "Politiikkasuositus"),
     ("hallituksen-linja.html", "Hallituksen linja.html", "Hallituksen linja"),
-    ("liberaali-vaihtoehto.html", "Liberaali vaihtoehto.html", "Liberaali vaihtoehto"),
+    ("liberaali-vaihtoehto.html", "Liberaalien vaihtoehto.html", "Liberaalien vaihtoehto"),
     ("alue-erittely.html", "Alue-erittely.html", "Alue-erittely"),
     ("sote-tehtavat.html", "app:sote-tehtavat.html", "Sote-tehtävät laissa"),
     ("laki-ja-palvelukokonaisuudet.html", "app:laki-ja-palvelukokonaisuudet.html", "Laki ja palvelukokonaisuudet"),
@@ -265,7 +265,7 @@ def process(body, fname):
     body = body.replace("Hallituksen linja -välilehden", '<a href="hallituksen-linja.html">Hallituksen linja</a> -välilehden')
     body = re.sub(r'<span data-atom="mention"[^>]*>[^<]*</span>', "Harri Juntunen", body)
     body = re.sub(r'<p><time[^>]*>(\d{4})-(\d{2})-(\d{2})</time> · Harri Juntunen</p>', lambda m: f'<p class="byline">{int(m.group(3))}.{int(m.group(2))}.{m.group(1)} · Harri Juntunen</p>', body)
-    body = re.sub(r'<a data-atom="ref" data-ref="file/76c5cc30-4152">', '<a href="liberaali-vaihtoehto.html">', body)
+    body = re.sub(r'<a data-atom="ref" data-ref="file/76c5cc30-4152">[^<]*</a>', '<a href="liberaali-vaihtoehto.html">Liberaalien vaihtoehto</a>', body)
     body = body.replace("välilehdellä Politiikkasuositus", '<a href="index.html">välilehdellä Politiikkasuositus</a>')
     body = body.replace("välilehdellä Hallituksen linja", '<a href="hallituksen-linja.html">välilehdellä Hallituksen linja</a>')
     body = body.replace("(ks. Hallituksen linja, luvut 3–5)", '(ks. <a href="hallituksen-linja.html#3-vaikutukset-palveluihin">Hallituksen linja, luvut 3–5</a>)')
