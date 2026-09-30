@@ -249,8 +249,11 @@ def process(body, fname):
     def _wrap(m):
         t = m.group(0)
         head = re.search(r"<thead>.*?</thead>", t, re.S)
-        ncol = head.group(0).count("<th") if head else 0
-        cls = "tablewrap wide" if ncol >= 5 else "tablewrap"
+        ncol = len(re.findall(r"<th[ >]", head.group(0))) if head else 0
+        rows = max(1, len(re.findall(r"<tr>", t)))
+        density = len(re.sub(r"<[^>]+>", "", t)) / rows
+        # leveä asettelu vain, jos sarakkeita on paljon JA soluissa paljon tekstiä
+        cls = "tablewrap wide" if ncol >= 5 and density >= 150 else "tablewrap"
         return f'<div class="{cls}">{t}</div>'
     body = re.sub(r"<table>.*?</table>", _wrap, body, flags=re.S)
     # figure-taulukot eivät tarvitse kääremuutosta, siivotaan tuplakääre detailsin sisältä
