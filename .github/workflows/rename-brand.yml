@@ -1,0 +1,27 @@
+name: rename-brand
+on:
+  push:
+    paths:
+      - '.github/workflows/rename-brand.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace party name
+        run: |
+          set -e
+          files=$(grep -ril "liberaalipuolue" docs src apps_src build.py README.md style.css 2>/dev/null || true)
+          echo "$files"
+          for f in $files; do
+            sed -i 's/LIBERAALIPUOLUE/LIBERAALI/g; s/Liberaalipuolueen/liberaalin/g; s/Liberaalipuolue/liberaali/g' "$f"
+          done
+      - name: Commit
+        run: |
+          git config user.name "brand-bot"
+          git config user.email "brand-bot@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "no changes"; else git commit -m "Replace party name with liberaali"; git push; fi
